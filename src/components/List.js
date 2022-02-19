@@ -1,92 +1,54 @@
-// import axios from 'axios';
-// import React, { useEffect, useState } from 'react';
+ import axios from 'axios';
+ import React, { useEffect, useState } from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
-// import { url } from '../helpers/url';
-import '../styles/List.css';
+import { url } from '../helpers/url';
+
+
+
 
 export const List = () => {
 
 
-    // const [cars, setCars] = useState([])
+     const [products, setProducts] = useState([])
+
+    
 
 
-    // const getData = async () => {
+    const getData = async () => {
 
-    //     axios.get(url)
-    //         .then(response => {
-    //             //console.log(response.data);
-    //             setCars(response.data)
-    //         }).catch(error => {
-    //             console.log(error);
-    //         })
-
-    // }
-
-
-    // useEffect(() => {
-    //     getData()
-    // }, [])
+        axios.get(url)
+            .then(response => {
+               // console.log(response.data);
+                setProducts(response.data)
+            }).catch(error => {
+                console.log(error);
+            })
+    }
 
 
-    // console.log(cars);
+    useEffect(() => {
+        getData()
+    }, [])
 
 
+     console.log(products);
+     
 
-    // const DeleteCar = (id) => {
-
-    //     axios.delete(url + id)
-    //         .then(response => {
-    //             getData()
-    //         }).catch(error => {
-    //             console.log(error)
-    //         })
-    // }
 
 
     return (
         <div>
-            {/* <table className="tabla">
-                <thead>
-                    <tr>
-                        <th>Brand</th>
-                        <th>Model</th>
-                        <th>Year</th>
-                        <th>Image</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {
-                        cars.map(car => (
-                            <tr key={car.id} >
-                                <th>{car.brand}</th>
-                                <th>{car.model}</th>
-                                <th>{car.year}</th>
-                                <th><img src={car.imagen} width="40" height="50" alt="car" /></th>
-                                <th><button onClick={() => DeleteCar(car.id)}  >Delete car</button></th>
-                            </tr>
-                        ))
-
-                    }
-
-
-                </tbody>
-
-            </table>
-            <hr /> */}
-
-
-            <Row xs={1} md={5} className="g-4">
-                {Array.from({ length: 10 }).map((_, idx) => (
+            <Row xs={1} md={5} className="g-4"   >
+                { products.map(prod => (
                     <Col>
-                        <Card>
-                            <Card.Img variant="top" src="holder.js/100px160" />
-                            <Card.Body>
-                                <Card.Title>Precio</Card.Title>
+                        <Card  >
+                            <Card.Img variant="top" src={prod.imagen}  alt="" />
+                            <Card.Body  key={prod.id} >
+                                <Card.Title>{prod.precio}</Card.Title>
                                 <Card.Text>
-                                    Producto
+                                    {prod.nombre}
                                 </Card.Text>
+                                    
                             </Card.Body>
                         </Card>
                     </Col>
