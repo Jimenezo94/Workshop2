@@ -86,14 +86,7 @@ console.log(this.state.productosAdd)
             <div className="container">
 
                 <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Documento</th>
-                            <th>Nombres</th>
-                            <th>Apellidos</th>
-                        </tr>
-                    </thead>
+                    <h3>Ofertas</h3>
                     <tbody>
                         {
                             this.state.data.map(prod => {
@@ -105,7 +98,7 @@ console.log(this.state.productosAdd)
                                   
                                         <td><img src={prod.imagen} width="50px" height="70px" alt=""/></td>
                                          <button className="btn btn-danger"
-                                         onClick={() => {this.Seleccionarproducto(prod); this.setState({modalEliminar: true})}}></button>
+                                         onClick={() => {this.Seleccionarproducto(prod); this.setState({modalEliminar: true})}}>Agregar</button>
                                     </tr>
                                 )
                             })
@@ -113,8 +106,6 @@ console.log(this.state.productosAdd)
                       
                     </tbody>
                 </table>
-
-               
 
                 <Modal isOpen={this.state.modalEliminar}>
                 
@@ -131,7 +122,6 @@ console.log(this.state.productosAdd)
                         }
                         </div>
                     
-                 
                     </ModalBody>
                     <ModalFooter>
                         <div>
