@@ -1,83 +1,84 @@
 import axios from "axios";
 import React, { Component } from 'react'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, Card, Col, Row } from "react-bootstrap";
+import { Modal, ModalBody, ModalFooter } from 'reactstrap';
 
 const url = "https://workshop-tienda.herokuapp.com/registros/";
 
 
 export default class List extends Component {
 
- 
-    constructor(props){
+
+    constructor(props) {
         super(props);
         this.state = {
             data: [],
             modalEliminar: false,
-            info:{
-                id:'',
-                precio:'',
-                nombre:'',
+            info: {
+                id: '',
+                precio: '',
+                nombre: '',
                 imagen: '',
-            
+
             },
-            productosAdd:[]
-            
+            productosAdd: []
+
         }
     }
-   
 
-    componentDidMount(){
+
+    componentDidMount() {
         this.peticionGet();
     }
 
-   
+
     Seleccionarproducto = (producto) => {
 
-         this.setState({
-             info: {
-                
+        this.setState({
+            info: {
+
                 id: producto.id,
                 precio: producto.precio,
                 nombre: producto.nombre,
                 imagen: producto.imagen,
-             }
-         })
-         console.log(producto)
-         console.log(this.state.info)
+            }
+        })
+        console.log(producto)
+        console.log(this.state.info)
 
-         this.setState({modalEliminar: true})
+        this.setState({ modalEliminar: true })
 
     }
 
-    peticionGet=()=>{
+    peticionGet = () => {
         axios.get(url)
-        .then(response => {
-            this.setState({data: response.data})
-            this.peticionGet();
-        })
-        .catch(error => {
-            console.log(error.message);
-        })
+            .then(response => {
+                this.setState({ data: response.data })
+                this.peticionGet();
+            })
+            .catch(error => {
+                console.log(error.message);
+            })
     }
 
-    
-   
+
+
     peticionDelete = async () => {
-        await axios.delete(url+this.state.form.id)
-        .then(response => {
-            this.setState({modalEliminar:false});
-            this.peticionGet();
-        }).catch(error => {
-            console.log(error.message);
-        })
+        await axios.delete(url + this.state.form.id)
+            .then(response => {
+                this.setState({ modalEliminar: false });
+                this.peticionGet();
+            }).catch(error => {
+                console.log(error.message);
+            })
     }
 
     agregarProduct = () => {
         this.setState({
-            productosAdd : [...this.state.productosAdd, this.state.info],
-        
+            productosAdd: [...this.state.productosAdd, this.state.info],
+
         })
-console.log(this.state.productosAdd)
+        console.log(this.state.productosAdd)
 
     }
 
@@ -85,55 +86,60 @@ console.log(this.state.productosAdd)
         return (
             <div className="container">
 
-                <table className="table">
-                    <h3>Ofertas</h3>
-                    <tbody>
-                        {
-                            this.state.data.map(prod => {
-                                return(
-                                    <tr key={prod.id}>
-                                        <td>{prod.precio}</td>
-                                        <td>{prod.nombre}</td>
-                                        <td>{}</td>
-                                  
-                                        <td><img src={prod.imagen} width="50px" height="70px" alt=""/></td>
-                                         <button className="btn btn-danger"
-                                         onClick={() => {this.Seleccionarproducto(prod); this.setState({modalEliminar: true})}}>Agregar</button>
-                                    </tr>
-                                )
-                            })
-                        }
-                      
-                    </tbody>
-                </table>
+                <Row xs={1} md={5} className="g-4">
+                    {this.state.data.map(prod => (
+                        <Col>
+                            <Card key={prod.id}  >
+                                <Card.Img variant="top" src={prod.imagen} />
+                                <Card.Body>
+                                    <Card.Title>{prod.precio}</Card.Title>
+                                    <Card.Text>
+                                        {prod.nombre}
+                                    </Card.Text>
+                                    <Button className="btn btn-success"
+                                        onClick={() => { this.Seleccionarproducto(prod); this.setState({ modalEliminar: true }) }}>Detalle</Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+
+
 
                 <Modal isOpen={this.state.modalEliminar}>
-                
+
                     <ModalBody>
                         <div>
-                        {
-                                    <tr key={this.state.info.id}>
-                                        <td>{this.state.info.nombre}</td>
-                                        <td>{this.state.info.precio}</td>
-                                        <td><img src={this.state.info.imagen} width="70px" height="80px" alt=""/></td>
-                                         <button className="btn btn-danger"
-                                         onClick={() => {this.peticionGet(1); this.setState({modalEliminar: true})}}></button>
-                                    </tr>
-                        }
+                            {
+                               
+
+                        <Card key={this.state.info.id} >
+                        <Card.Img  src={this.state.info.imagen} width="160px"  alt="" />
+                        <Card.Body>
+                        <Card.Title>{this.state.info.precio}</Card.Title>
+                         <Card.Text>
+                        {this.state.info.nombre}
+                        </Card.Text>
+                        <Button className="btn btn-success"
+                                onClick={() => this.agregarProduct()}>Agregar</Button>
+                            
+                        </Card.Body>    
+                                    </Card>
+                            }
                         </div>
-                    
+
                     </ModalBody>
                     <ModalFooter>
                         <div>
-                        <button className="btn btn-danger"
-                       onClick={() => this.agregarProduct()}>Agregar</button>
-                        <button className="btn btn-secundary"
-                       onClick={() => this.setState({modalEliminar:false})}>X</button>
+                        <Button className="btn btn-danger"
+                                        onClick={() => { this.peticionGet(1); this.setState({ modalEliminar: true }) }}> Eliminar</Button>
+                            <Button className="btn btn-secondary"
+                                onClick={() => this.setState({ modalEliminar: false })}>Cerrar</Button>
                         </div>
                     </ModalFooter>
                 </Modal>
             </div>
-                
+
         )
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
- import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import '../style/navStyle.css'
 
 
 export const Naveg = () => {
@@ -15,7 +16,7 @@ export const Naveg = () => {
                         <option>Buenos Aires</option>
                         <option>Bogotá</option>
                     </select>
-                    <Link   className="link" to="/form"><Button> Carrito </Button></Link>
+                    <Link   className="link" to="/form"><Button   variant="success"  > Carrito </Button></Link>
                 </nav>
             </div>   
   )
