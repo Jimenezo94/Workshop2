@@ -1,61 +1,149 @@
- import axios from 'axios';
- import React, { useEffect, useState } from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
-import { url } from '../helpers/url';
+import axios from "axios";
+import React, { Component } from 'react'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+
+const url = "https://workshop-tienda.herokuapp.com/registros/";
 
 
+export default class List extends Component {
 
+ 
+    constructor(props){
+        super(props);
+        this.state = {
+            data: [],
+            modalEliminar: false,
+            info:{
+                id:'',
+                precio:'',
+                nombre:'',
+                imagen: '',
+            
+            },
+            productosAdd:[]
+            
+        }
+    }
+   
 
-export const List = () => {
-
-
-     const [products, setProducts] = useState([])
-
-    
-
-
-    const getData = async () => {
-
-        axios.get(url)
-            .then(response => {
-               // console.log(response.data);
-                setProducts(response.data)
-            }).catch(error => {
-                console.log(error);
-            })
+    componentDidMount(){
+        this.peticionGet();
     }
 
+   
+    Seleccionarproducto = (producto) => {
 
-    useEffect(() => {
-        getData()
-    }, [])
+         this.setState({
+             info: {
+                
+                id: producto.id,
+                precio: producto.precio,
+                nombre: producto.nombre,
+                imagen: producto.imagen,
+             }
+         })
+         console.log(producto)
+         console.log(this.state.info)
 
+         this.setState({modalEliminar: true})
 
-     console.log(products);
-     
+    }
 
+    peticionGet=()=>{
+        axios.get(url)
+        .then(response => {
+            this.setState({data: response.data})
+            this.peticionGet();
+        })
+        .catch(error => {
+            console.log(error.message);
+        })
+    }
 
+    
+   
+    peticionDelete = async () => {
+        await axios.delete(url+this.state.form.id)
+        .then(response => {
+            this.setState({modalEliminar:false});
+            this.peticionGet();
+        }).catch(error => {
+            console.log(error.message);
+        })
+    }
 
-    return (
-        <div>
-            <Row xs={1} md={5} className="g-4"   >
-                { products.map(prod => (
-                    <Col>
-                        <Card  >
-                            <Card.Img variant="top" src={prod.imagen}  alt="" />
-                            <Card.Body  key={prod.id} >
-                                <Card.Title>{prod.precio}</Card.Title>
-                                <Card.Text>
-                                    {prod.nombre}
-                                </Card.Text>
-                                    
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+    agregarProduct = () => {
+        this.setState({
+            productosAdd : [...this.state.productosAdd, this.state.info],
+        
+        })
+console.log(this.state.productosAdd)
 
+    }
 
-        </div>
-    )
+    render() {
+        return (
+            <div className="container">
+
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Documento</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            this.state.data.map(prod => {
+                                return(
+                                    <tr key={prod.id}>
+                                        <td>{prod.precio}</td>
+                                        <td>{prod.nombre}</td>
+                                        <td>{}</td>
+                                  
+                                        <td><img src={prod.imagen} width="50px" height="70px" alt=""/></td>
+                                         <button className="btn btn-danger"
+                                         onClick={() => {this.Seleccionarproducto(prod); this.setState({modalEliminar: true})}}></button>
+                                    </tr>
+                                )
+                            })
+                        }
+                      
+                    </tbody>
+                </table>
+
+               
+
+                <Modal isOpen={this.state.modalEliminar}>
+                
+                    <ModalBody>
+                        <div>
+                        {
+                                    <tr key={this.state.info.id}>
+                                        <td>{this.state.info.nombre}</td>
+                                        <td>{this.state.info.precio}</td>
+                                        <td><img src={this.state.info.imagen} width="70px" height="80px" alt=""/></td>
+                                         <button className="btn btn-danger"
+                                         onClick={() => {this.peticionGet(1); this.setState({modalEliminar: true})}}></button>
+                                    </tr>
+                        }
+                        </div>
+                    
+                 
+                    </ModalBody>
+                    <ModalFooter>
+                        <div>
+                        <button className="btn btn-danger"
+                       onClick={() => this.agregarProduct()}>Agregar</button>
+                        <button className="btn btn-secundary"
+                       onClick={() => this.setState({modalEliminar:false})}>X</button>
+                        </div>
+                    </ModalFooter>
+                </Modal>
+            </div>
+                
+        )
+    }
 }

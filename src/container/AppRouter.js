@@ -4,7 +4,7 @@ import {BrowserRouter as Router,
     Route,
     Navigate} 
     from 'react-router-dom';
-import { List } from '../components/List';
+import List from '../components/List';
 import { Naveg } from '../components/Naveg';
 
 
